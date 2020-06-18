@@ -1,0 +1,1131 @@
+<!-- <form action="/upload" method="POST" enctype="multipart/form-data">
+    <input type="file" name="archivo">
+    <input type="submit">
+   </form> -->
+
+
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <!-- <link rel="shortcut icon" href="./assets/img/trazacli.ico" type="image/x-icon"> -->
+    <title>Reporteador | V0.1</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for("static", filename="css/select.min.css") }}">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+    integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <link href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css" rel="stylesheet">
+
+
+    <style>
+
+        .table-ms{
+          border: 1px solid #dee2e6;
+           border-radius: 5px;
+        }
+        .card-header {
+            background-color: #16599f;
+            color: #fff;
+        }
+
+        .table .thead-dark th {
+            background-color: #16599f;
+            border-color: #fff;
+        }
+
+        .custom-file-input~.custom-file-label::after {
+            content: "Seleccionar";
+        }
+
+        .btn-primary {
+            background-color: #16599f;
+            border-color: #16599f;
+        }
+
+        a.navbar-brand {
+            color: white;
+        }
+
+        a.nav-item {
+            color: white;
+        }
+
+        .nav-tabs-custom>.nav-tabs>li.active {
+            border-top-color: #ffc11e;
+            border-radius: 5px;
+        }
+
+        .nav-tabs-custom>.nav-tabs>li {
+            border-top: 4px solid transparent;
+            margin-bottom: -2px;
+            margin-right: 5px;
+        }
+
+        .nav-tabs-custom>.nav-tabs {
+            margin: 0;
+            border-bottom-color: #f4f4f4;
+            border-top-right-radius: 3px;
+            border-top-left-radius: 3px;
+        }
+
+        .nav-tabs {
+            border-bottom: 1px solid #ddd;
+        }
+
+        .nav {
+            padding-left: 0;
+            margin-bottom: 0;
+            list-style: none;
+        }
+
+        .nav-tabs-custom>.nav-tabs>li:first-of-type.active>a {
+            border-left-color: transparent;
+        }
+
+        .nav-tabs-custom>.nav-tabs>li:first-of-type.active>a {
+            border-left-color: transparent;
+        }
+
+        .nav-tabs-custom>.nav-tabs>li.active>a,
+        .nav-tabs-custom>.nav-tabs>li.active:hover>a {
+            background-color: #fff;
+            color: #444;
+        }
+
+        .nav-tabs-custom>.nav-tabs>li.active>a,
+        .nav-tabs-custom>.nav-tabs>li.active:hover>a {
+            background-color: #fff;
+            color: #444;
+        }
+
+        .nav-tabs-custom>.nav-tabs>li.active>a,
+        .nav-tabs-custom>.nav-tabs>li.active:hover>a {
+            background-color: #fff;
+            color: #444;
+        }
+
+        .nav-tabs-custom>.nav-tabs>li.active>a,
+        .nav-tabs-custom>.nav-tabs>li.active:hover>a {
+            background-color: #fff;
+            color: #444;
+        }
+
+        .nav-tabs>li>a {
+            margin-right: 2px;
+            line-height: 1.42857143;
+            border: 1px solid transparent;
+            border-radius: 4px 4px 0 0;
+        }
+
+        .nav>li>a {
+            position: relative;
+            display: block;
+            padding: 10px 15px;
+            color: black;
+        }
+
+        .dataTables_paginate a.paginate_button.previous {
+            display: none;
+        }
+
+        .dataTables_paginate a.paginate_button.next {
+            display: none;
+        }
+        .container-spinner{
+            z-index: 200;
+            position: fixed;
+            width: 100%;
+            opacity: 0.2;
+            height: 100%;
+            background-color: wheat;
+        
+        }
+        .spinner{
+            width: 80px;
+            height: 80px;
+            z-index: 9999;
+            border: 2px solid #f3f3f3;
+            border-top:3px solid red;
+            border-radius: 100%;
+            position: fixed;
+            top:0;
+            bottom:0;
+            left:0;
+            right: 0;
+            margin: auto;
+            
+            animation: spin 1s infinite linear;
+        }
+
+        @keyframes spin {
+            from{
+                transform: rotate(0deg);
+            }to{
+                transform: rotate(360deg);
+            }
+        }
+
+
+
+        
+    </style>
+
+<body>
+    <div class="container-spinner">
+        <div class="spinner">
+        </div>
+    </div>
+    <div class="container-fluid" style="padding: 50px 90px;">
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <b>Reporteador</b>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="col-xs-12">
+                            <div class="nav-tabs-custom">
+                                <ul class="nav nav-tabs">
+                                    <li class="active"><a href="#nav1" data-toggle="tab" aria-expanded="false"
+                                            class="active show">Reportes</a></li>
+                                    <li class=""><a href="#nav2" data-toggle="tab" aria-expanded="false"
+                                            class="">Detalle Reportes</a></li>
+                                    <li class=""><a href="#nav3" data-toggle="tab" aria-expanded="false"
+                                            class="">Correos</a></li>
+                                    <li class=""><a href="#nav4" data-toggle="tab" aria-expanded="false"
+                                                class="">Servidores</a></li>
+                                    <li class=""><a href="#nav5" data-toggle="tab" aria-expanded="false"
+                                                    class="">Plantilla Excel</a></li>
+                                </ul>
+
+
+                                <div class="tab-content">
+
+
+                                    <div class="tab-pane active show" id="nav1">
+                                        <br>
+                                        <div class="row">
+                                            <div class="col-lg-4">
+                                                <div class="form-group">
+                                                    <label>Correo(s)</label>
+                                                    <select id="ddl_correos" title="Correos"
+                                                    class="form-control form-control-sm selectpicker" data-size="10"
+                                                    data-live-search="true" data-actions-box="true"
+                                                    data-key="ddl_correos" >
+                                                </select>
+
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-4">
+                                                <div class="form-group">
+                                                    <label>Nombre</label>
+                                                    <input type="text" name="txt_rep_nombre" id="txt_rep_nombre"
+                                                        class="form-control">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-4">
+                                                <div class="form-group">
+                                                    <label>Razon</label>
+                                                    <input type="text" name="txt_rep_razon" id="txt_rep_razon"
+                                                        class="form-control">
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-lg-4">
+                                                <div class="form-group">
+                                                    <label>Ruc</label>
+                                                    <input type="text" name="txt_rep_ruc" id="txt_rep_ruc"
+                                                        class="form-control">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-4">
+                                                <div class="form-group">
+                                                    <label>Plantilla</label>
+                                                    <select id="dll_plantilla" title="Plantillas"
+                                                    class="form-control form-control-sm selectpicker" data-size="10"
+                                                    data-live-search="true" data-actions-box="true"
+                                                    data-key="dll_plantilla" >
+                                                </select>
+                                                </div>
+                                            </div>
+                                            <input type="hidden" id="txt_idreporte"/>
+                                            <div class="col-lg-2" style="padding-top: 29px;">
+                                                <div class="form-group">
+                                                    <button class="btn btn-primary" id="save_reporte" onclick="SaveReport();"
+                                                        type="button" >Registrar</button>
+                                                        <button class="btn btn-success" id="update_reporte" onclick="SaveReport();"
+                                                        type="button" >Modificar</button>
+                                                    <button class="btn btn-danger" onclick="setReportes(0);"
+                                                        type="button" >Limpiar</button>
+                                                </div>
+
+                                            </div>
+                                         
+                                        </div>    
+                                    
+                               
+                                        <hr>
+
+                                        <div class="row" style="  border: 2px #EDEFF5 solid;
+                                        padding: 30px 30px;
+                                        align-items: center;
+                                        border-radius: 4px;">
+                                           
+                                            <div class="col-lg-12" id="contenedor_reportes">
+
+
+                                            </div>
+                                          
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="tab-pane" id="nav2">
+                                        <br>
+                                        <div class="row">
+                                            <div class="col-lg-4">
+                                                <div class="form-group">
+                                                    <label>Seleccione su Reporte</label>
+                                                    <select id="dll_reporte" title="Reporte"
+                                                    class="form-control form-control-sm selectpicker" data-size="10"
+                                                    data-live-search="true" data-actions-box="true"
+                                                    data-key="dll_reporte" >
+                                                </select>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <hr>    
+
+                                        <div class="row">
+                                          
+
+                                            <div class="col-lg-3">
+                                                <div class="form-group">
+                                                    <label>Hoja</label>
+                                                    <input type="text" name="txt_hoja" id="txt_hoja"
+                                                        class="form-control">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-3">
+                                                <div class="form-group">
+                                                    <label>Columna</label>
+                                                    <input type="text" name="txt_columna" id="txt_columna"
+                                                        class="form-control">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-3">
+                                                <div class="form-group">
+                                                    <label>Fila</label>
+                                                    <input type="text" name="txt_fila" id="txt_fila"
+                                                        class="form-control">
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <div class="form-group">
+                                                    <label>Seleccione Servidor</label>
+                                                    <select id="dll_servidor" title="Servidor"
+                                                    class="form-control form-control-sm selectpicker" data-size="10"
+                                                    data-live-search="true" data-actions-box="true"
+                                                    data-key="dll_servidor" >
+                                                </select>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="row">
+                                           
+                                            <div class="col-lg-8">
+                                                <div class="form-group">
+                                                    <label>Query(Principal)</label>
+                                                    <textarea class="form-control" name="txt_query" id="txt_query"
+                                                        rows="5">Ingrese Query </textarea>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-2">
+                                                <div class="form-group">
+                                                    <label>Nivel 2</label>
+                                                    <select id="dll_nivel2" title="Nivel2"
+                                                    class="form-control form-control-sm selectpicker" data-size="10"
+                                                    data-live-search="true" data-actions-box="true"
+                                                    data-key="dll_nivel2" >
+                                                    <option value="0" selected>[----Seleccione una Opción----]</option>
+                                                    <option value="1">Si</option>
+                                                    <option value="2">No</option>
+                                                    </select>
+
+                                                   
+                                                </div>
+                                            </div>
+                                            <input type="hidden" id="txt_id_detalle"/>
+                                            <div class="col-lg-2" style="padding-top: 29px;">
+                                                <div class="form-group">
+                                                    <button class="btn btn-primary" id="save_reporte_detalle" onclick="SaveReportDetalle();"
+                                                        type="button" >Registrar</button>
+                                                        <button class="btn btn-success" id="update_reporte_detalle" onclick="SaveReportDetalle();"
+                                                        type="button" >Modificar</button>
+                                                    <button class="btn btn-danger" onclick="setReportesDetalle(0);"
+                                                        type="button" >Limpiar</button>
+                                                </div>
+
+                                            </div>
+                                         
+                                        </div>  
+
+                                        <div class="row" id="contenedor_nivel2">
+                                            <div class="col-lg-2">
+                                                <div class="form-group">
+                                                    <label>Tabla Temporal(Nivel 2)</label>
+                                                    <input type="text" name="txt_name_table_temporal" id="txt_name_table_temporal"
+                                                        class="form-control">
+                                                </select>
+
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-2">
+                                                <div class="form-group">
+                                                    <label>Seleccione Servidor(Nivel 2)</label>
+                                                    <select id="dll_servidor_2" title="Servidor(Nivel2)"
+                                                    class="form-control form-control-sm selectpicker" data-size="10"
+                                                    data-live-search="true" data-actions-box="true"
+                                                    data-key="dll_servidor_2" >
+                                                </select>
+
+                                                </div>
+                                            </div>
+                                           
+                                            <div class="col-lg-8">
+                                                <div class="form-group">
+                                                    <label>Query(Nivel 2)</label>
+                                                    <textarea class="form-control" name="txt_query_nivel2" id="txt_query_nivel2"
+                                                        rows="5">Ingrese Query </textarea>
+                                                </div>
+                                            </div>
+                                       
+                                         
+                                        </div> 
+
+
+
+                                        <hr>
+                                        <div class="row" style="  border: 2px #EDEFF5 solid;
+                                        padding: 30px 30px;
+                                        align-items: center;
+                                        border-radius: 4px;">
+                                           
+                                            <div class="col-lg-12" id="contenedor_reportes_detalle">
+
+
+                                            </div>
+                                          
+                                        </div>
+
+
+
+                                    </div>
+
+                                    <div class="tab-pane" id="nav3">
+                                        <br>
+                                        <div class="row">
+
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <label>Tag para el Correo</label>
+                                                    <input type="text" class="form-control" id="txt_name_correo"/>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <label>Correos(Separados por Comas)</label>
+                                                    <textarea class="form-control" name="txt_correo_send" id="txt_correo_send"
+                                                        rows="5">Ingrese Correos </textarea>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <label>Html(body correo)</label>
+                                                    <textarea class="form-control" name="txt_html_send" id="txt_html_send"
+                                                        rows="5">Ingrese Html </textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <input type="hidden" id="txt_id_correos"/>
+                                            <div class="col-lg-10" ></div>
+                                            <div class="col-lg-2" style="padding-top: 29px;">
+                                                <div class="form-group">
+                                                    <button class="btn btn-primary" id="save_correos" onclick="SaveCorreos();"
+                                                        type="button" >Registrar</button>
+                                                        <button class="btn btn-success" id="update_correos" onclick="SaveCorreos();"
+                                                        type="button" >Modificar</button>
+                                                    <button class="btn btn-danger" onclick="setCorreos(0);"
+                                                        type="button" >Limpiar</button>
+                                                </div>
+
+                                            </div>
+                                         </div>
+
+                                         <hr>
+                                         <div class="row" style="  border: 2px #EDEFF5 solid;
+                                         padding: 30px 30px;
+                                         align-items: center;
+                                         border-radius: 4px;">
+                                            
+                                             <div class="col-lg-12" id="contenedor_correo">
+ 
+ 
+                                             </div>
+                                           
+                                         </div>
+ 
+
+
+
+                                    </div>
+                                  
+                                    <div class="tab-pane" id="nav4">
+                                        <br>
+                                        <div class="row">
+
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <label>Tag para el Servidor</label>
+                                                    <input type="text" class="form-control" id="txt_nameservidor"/>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-3">
+                                                <div class="form-group">
+                                                    <label>Base de Datos</label>
+                                                    <input type="text" class="form-control" id="txt_database"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <div class="form-group">
+                                                    <label>Host</label>
+                                                    <input type="text" class="form-control" id="txt_host"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <div class="form-group">
+                                                    <label>User</label>
+                                                    <input type="text" class="form-control" id="txt_user"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <div class="form-group">
+                                                    <label>Password</label>
+                                                    <input type="text" class="form-control" id="txt_password"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <input type="hidden" id="txt_id_servidores"/>
+                                            <div class="col-lg-10" ></div>
+                                            <div class="col-lg-2" style="padding-top: 29px;">
+                                                <div class="form-group">
+                                                    <button class="btn btn-primary" id="save_servidores" onclick="SaveServidor();"
+                                                        type="button" >Registrar</button>
+                                                        <button class="btn btn-success" id="update_servidores" onclick="SaveServidor();"
+                                                        type="button" >Modificar</button>
+                                                    <button class="btn btn-danger" onclick="setServidores(0);"
+                                                        type="button" >Limpiar</button>
+                                                </div>
+
+                                            </div>
+                                         </div>
+
+                                         <hr>
+                                         <div class="row" style="  border: 2px #EDEFF5 solid;
+                                         padding: 30px 30px;
+                                         align-items: center;
+                                         border-radius: 4px;">
+                                            
+                                             <div class="col-lg-12" id="contenedor_servidor">
+ 
+ 
+                                             </div>
+                                           
+                                         </div>
+ 
+
+
+
+                                    </div>
+
+                                    <div class="tab-pane" id="nav5">
+                                        <br>
+                                        <div class="row">
+
+                                            <!-- <form id="savePlantilla" method="POST" enctype="multipart/form-data">
+                                                <div class="col-lg-12">
+                                                    <div class="form-group">
+                                                        <label>Ingrese Plantilla</label>
+                                                        <input type="file" class="form-control" id="archivo"/>
+                                                    </div>
+                                                </div>
+                                               </form>  -->
+
+                                               <form action="/upload" method="POST" enctype="multipart/form-data">
+                                                <div class="row">
+                                                    <div class="col-lg-10">
+                                                        <label>Ingrese Plantilla</label>
+                                                        <input type="file" class="form-control" name="archivo">
+                                                        </div>
+                                                        <div class="col-lg-2" style="padding-top: 29px;" >
+                                                            <input type="submit" class="btn btn-success">
+                                                        </div>
+                                                </div>
+                                               
+                                               
+                                               </form> 
+                                            
+
+                                        </div>
+                                         <hr>
+                                         <div class="row" style="  border: 2px #EDEFF5 solid;
+                                         padding: 30px 30px;
+                                         align-items: center;
+                                         border-radius: 4px;">
+                                            
+                                             <div class="col-lg-12" id="contenedor_plantilla">
+ 
+ 
+                                             </div>
+                                           
+                                         </div>
+ 
+
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <script src="https://code.jquery.com/jquery-3.4.1.js"
+        integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"
+        integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
+        crossorigin="anonymous"></script>
+    <script type="text/javascript"
+        src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript"
+        src="{{ url_for("static", filename="scripts/select.min.js") }}"></script>
+  <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+
+</body>
+
+
+
+<script>
+      $('select').selectpicker();
+      $('li > a').click(function () {
+          $('li').removeClass();
+          $(this).parent().addClass('active');
+      });
+      function loader(valor){
+
+    if(valor == false){
+
+    $(".container-spinner").css("display","none");
+    }else{
+
+    $(".container-spinner").css("display","block");
+    }
+
+}
+
+    var uri_dev = "http://192.99.145.229:81/";
+    var REPORTES=[]; 
+    var CORREOS=[];
+    var PLANTILLAS=[];
+    var SERVIDORES=[];
+    var REPORTES_DETALLE=[];
+
+      async function init(){
+        loader(true);
+        await $.get(uri_dev + 'reports', async function (data, status) { REPORTES=data.data || [];setReportes(0);}).catch(x=>{console.log(x);loader(false);});
+        await CargarReportes();
+        await $.get(uri_dev + 'getCorreos', async function (data, status) { CORREOS=data.data || [];setCorreos(0);}).catch(x=>{console.log(x);loader(false);});
+        await CargarCorreos();
+        await LoadDropDownList(CORREOS,'ddl_correos');
+        await $.get(uri_dev + 'getPlantilla', async function (data, status) { PLANTILLAS=data.data || [];}).catch(x=>{console.log(x);loader(false);});
+        await LoadDropDownList(PLANTILLAS,'dll_plantilla');
+        await CargarPlantilla();
+        await LoadDropDownList(REPORTES,'dll_reporte');
+        await $.get(uri_dev + 'getServidores', async function (data, status) { SERVIDORES=data.data || [];setServidores(0);}).catch(x=>{console.log(x);loader(false);});
+        await CargarServidores();
+        await LoadDropDownList(SERVIDORES,'dll_servidor');
+        await LoadDropDownList(SERVIDORES,'dll_servidor_2');
+        await CargarReportesDetalle(0);
+        loader(false);
+    }
+      init();
+        
+      async function CargarReportes(){
+        var datax = REPORTES.map(function (x) {
+            return {
+                    Id: x.Id, 'Nombre Reporte': x['Nombre Reporte'], Razon: x.Razon, Ruc: x.Ruc, 
+                    Acciones: '<button class="btn btn-success" onclick="setReportes(' + x.Id + ')"><i class="fa fa-wrench inactiveLink"></i></button>&nbsp<button class="btn btn-warning" onclick="enviarReporte(' + x.Id + ')"><i class="fa fa-send-o"></i></button>&nbsp<button class="btn btn-primary" onclick="DuplicateReport(' + x.Id + ')"><i class="fa fa-file-o"></i></button>&nbsp<button class="btn btn-danger" onclick="DeleteReport(' + x.Id + ')"><i class="fa fa-times"></i></button>'
+                    }
+            });
+            await CreateDataTable(datax,'table_reportes','contenedor_reportes');
+        }
+      
+      async function CargarCorreos(){
+
+        var datax = CORREOS.map(function (x) {
+        return {Id:x.Id,TagCorreo:x.valor,Correos:x.correos,Plantilla:'html',
+            Acciones :'<button class="btn btn-primary" onclick="setCorreos('+x.Id+')"><i class="fa fa-wrench"></i></button>&nbsp<button class="btn btn-danger" onclick="DeleteCorreo('+x.Id+')"><i class="fa fa-times"></i></button>'};
+
+        });
+        await CreateDataTable(datax,'table_correos','contenedor_correo');
+     }
+    
+      async function CargarServidores(){
+
+        var datax = SERVIDORES.map(function (x) {
+            return {Id:x.Id,TagServidor:x.valor,BaseDatos:x.db,Host:x.host,Usuario:x.user,Password:x.password,
+          Acciones :'<button class="btn btn-primary" onclick="setServidores('+x.Id+')"><i class="fa fa-wrench"></i></button>&nbsp<button class="btn btn-danger" onclick="DeleteServidor('+x.Id+')"><i class="fa fa-times"></i></button>'};
+        });
+        await CreateDataTable(datax,'table_servidores','contenedor_servidor');
+     }
+
+     async function CargarPlantilla(){
+        var datax = PLANTILLAS.map(function (x) {
+            return {Id:x.codigo,NombrepPlantilla:x.valor,
+          Acciones :'<button class="btn btn-danger" onclick="DeletePlantilla('+x.codigo+')"><i class="fa fa-times"></i></button>&nbsp<button class="btn btn-primary" onclick="DescargarArchivo(&apos;'+x.valor+'&apos;)"><i class="fa fa-download"></i></button>'};
+        });
+        await CreateDataTable(datax,'table_plantilla','contenedor_plantilla');
+     }
+     
+      async function CargarReportesDetalle(id){
+        setReportesDetalle(0);
+        REPORTES_DETALLE=[];
+        loader(true);
+        await $.get(uri_dev + 'detalleReports/' + id, async function (data, status) { REPORTES_DETALLE=data.data || [];}).catch(x=>{console.log(x);loader(false);});
+        if(REPORTES_DETALLE.length>0){
+            var datax = REPORTES_DETALLE.map(function (x) {
+            return {
+                  Hoja: x.hoja, Columna: x.col, Fila: x.fil, 'Id Servidor': x.id_servidor, Query: x.query.substring(0, 30),
+                    Acciones: '<button class="btn btn-primary" onclick="setReportesDetalle(' + x.Id + ')"><i class="fa fa-wrench"></i></button>&nbsp<button class="btn btn-danger" onclick="DeleteReportDetalle(' + x.Id + ')"><i class="fa fa-times"></i></button>'
+                    }
+            });
+        
+            await CreateDataTable(datax,'table_reportes_detalle','contenedor_reportes_detalle');
+        }else{
+            document.getElementById('contenedor_reportes_detalle').innerHTML = '';   
+        }
+        loader(false);
+        }
+
+      function CreateDataTable(data,nameTable,contenedor) {
+        response = data;
+        let txt = "";
+        let headers = [];
+        columns = Object.keys(response[0]);
+        txt += '<table   class="table table-ms table-hover dataTable responsive " style="margin-bottom: 12px !important; " id="'+nameTable+'">';
+        txt += '<thead>';
+        txt += '<tr style="background-color: #16599f;color:white;">';
+        for (x in columns) {
+        txt += "<th>" + columns[x] + "</th>";
+        headers.push({ data: columns[x] });
+        }
+        txt += "</tr>"
+        txt += "</thead>"
+        document.getElementById(contenedor).innerHTML = txt;
+        table = $('#'+nameTable).DataTable({
+        data: data,
+        columns: headers,
+        "aProcessing": true,//Activamos el procesamiento del datatables
+        "aServerSide": true,//Paginación y filtrado realizados por el servidor
+        dom: 'Bfrtip',//Definimos los elementos del control de tabla
+        "searching": true,
+        "language": {
+            "decimal": "",
+            "emptyTable": "No hay información",
+            "info": "Mostrando _START_ a _END_ de _TOTAL_ Entradas",
+            "infoEmpty": "Mostrando 0 to 0 of 0 Entradas",
+            "infoFiltered": "(Filtrado de _MAX_ total entradas)",
+            "infoPostFix": "",
+            "thousands": ",",
+            "lengthMenu": "Mostrar _MENU_ Entradas",
+            "loadingRecords": "Cargando...",
+            "processing": "Procesando...",
+            "search": "Filtrar:",
+            "zeroRecords": "Sin resultados encontrados",
+            "paginate": {
+            "first": "Primero",
+            "last": "Ultimo",
+            "next": "Siguiente",
+            "previous": "Anterior"
+            }
+        }
+        });
+
+        }
+
+      function LoadDropDownList(data,id){
+          $('#' +id).empty();
+          $('#' +id).append($("<option></option>").attr("value","0").text("[----Seleccione una Opción----]"));
+          $.each(data, function(key, value) {    
+          $('#' +id).append($("<option></option>").attr("value",value.codigo).text(value.valor));
+          });
+
+          $('#' +id).selectpicker('refresh');     
+        }
+
+      function setReportesDetalle(id){
+      $("#dll_servidor").val("0").trigger('change');
+      $("#dll_servidor_2").val("0").trigger('change');
+      $("#txt_hoja").val("");
+      $("#txt_columna").val("");
+      $("#txt_fila").val("");
+      $("#txt_query").val("");
+      $("#txt_id_detalle").val(0);
+      $("#save_reporte_detalle").show();
+      $("#update_reporte_detalle").hide(); 
+      $("#contenedor_nivel2").hide();
+      $("#txt_name_table_temporal").val("");
+      $("#dll_nivel2").val("0").trigger('change');
+      $("#txt_query_nivel2").val("");
+      $("#dll_servidor_2").val("0").trigger('change');
+      
+      
+      if(id != 0){
+      const valor = REPORTES_DETALLE.filter(function(valor) {return valor.Id == id; })[0];
+      $("#dll_servidor").val(valor.id_servidor).trigger('change');
+      $("#txt_hoja").val(valor.hoja);
+      $("#txt_columna").val(valor.col);
+      $("#txt_fila").val(valor.fil);
+      $("#txt_query").val(valor.query);
+      $("#txt_id_detalle").val(id);
+      $("#save_reporte_detalle").hide();
+      $("#update_reporte_detalle").show(); 
+      $("#txt_name_table_temporal").val(valor.name_tabla_tmp);
+      $("#dll_nivel2").val(valor.nivel2).trigger('change');
+      $("#txt_query_nivel2").val(valor.query_nivel2);
+      $("#dll_servidor_2").val(valor.id_servidor_n2).trigger('change');
+      
+      }
+      } 
+
+      function setReportes(id){
+      $("#ddl_correos").val("0").trigger('change');
+      $("#txt_rep_nombre").val("");
+      $("#txt_rep_razon").val("");
+      $("#txt_rep_ruc").val("");
+      $("#dll_plantilla").val("0").trigger('change');
+      $("#txt_idreporte").val(0);
+      $("#save_reporte").show();
+      $("#update_reporte").hide(); 
+      if(id != 0){
+      const valor = REPORTES.filter(function(valor) {return valor.Id == id; })[0];
+      $("#ddl_correos").val(valor['Id Correo']).trigger('change');
+      $("#txt_rep_nombre").val(valor['Nombre Reporte']);
+      $("#txt_rep_razon").val(valor.Razon);
+      $("#txt_rep_ruc").val(valor.Ruc);
+      $("#dll_plantilla").val(valor.Ruta).trigger('change');
+      $("#txt_idreporte").val(valor.Id);
+      $("#save_reporte").hide();
+      $("#update_reporte").show(); 
+      }
+      } 
+
+      function SaveReport(){
+      a = $("#ddl_correos option:selected").val();
+      b = $("#txt_rep_nombre").val();
+      c = $("#txt_rep_razon").val();
+      d = $("#txt_rep_ruc").val();
+      e = $("#dll_plantilla option:selected").val();
+      x = $("#txt_idreporte").val();
+      if(a !==0 && b !=="" && c !=="" && d !=="" && e !==0 ){
+        data = {
+        id: x || 0,
+        ruc: d,
+        razon: c,
+        name_reporte:b,
+        plantilla:e,
+        id_correo:a
+      }
+      $.post(uri_dev + 'actualizarReportes', data, async function (data, status) {
+        alert('Se gestiono con Exito');
+        $('#modal-kpi-reporte').modal('hide');
+        init();
+      }).catch(x=>{
+        console.log(x);
+        alert('Error');
+      });
+      }else{
+        alert("Falta llenar Campos");
+      }
+      }
+
+      function DeleteReport(id){
+        $.get(uri_dev + 'deleteReports/'+id, async function (data, status) {
+        alert("Se elmino con exito");
+        init();
+      });
+      }
+      
+      function DuplicateReport(id){
+        $.get(uri_dev + 'duplicate_reporte/'+id, async function (data, status) {
+        alert("Se Duplico con exito");
+        init();
+      });
+      }
+
+      function enviarReporte(id){
+        loader(true);
+        $.get(uri_dev + 'report/'+id, async function (data, status) {
+        alert("Se Envio con exito");
+        loader(false);
+      }).catch(x=>{loader(false)});
+      }
+      
+      $("#dll_reporte").change(function() {
+        CargarReportesDetalle($(this).val());
+       });
+     
+       $("#dll_nivel2").change(function() {
+        if($(this).val() !== "0" && $(this).val() !== "2" ){
+            $("#contenedor_nivel2").show();
+        }else{
+            $("#contenedor_nivel2").hide();
+        }
+       });
+
+
+      function SaveReportDetalle(){
+        a = $('#txt_hoja').val();
+        b = $('#txt_columna').val();
+        c = $('#txt_fila').val();
+        d = $('#dll_servidor option:selected').val();
+        e = $('#txt_query').val();
+        f = $('#dll_reporte option:selected').val();
+        x = $('#txt_id_detalle').val();
+        temp_n2 = $("#txt_name_table_temporal").val();
+        nivel_2 = $("#dll_nivel2 option:selected").val();
+        query_n2 = $("#txt_query_nivel2").val();
+        server_n2 = $("#dll_servidor_2 option:selected").val();
+        if(a !=="" && b !=="" && c !=="" && d !==0 && e !=="" && f !=="" ){
+
+        data = {
+        id: x || 0,
+        id_kpi:f,
+        hoja: a,
+        col: b,
+        fil:c,
+        query:e !== ''?e.replace(/'/g,'"'):'',
+        id_servidor:d,
+        nivel_2:nivel_2,
+        table_temp:temp_n2 != '' ? temp_n2 : 'vacio',
+        query_nivel2:query_n2 != '' ? query_n2 : 'vacio',
+        id_servidor_2:server_n2
+
+        }
+        $.post(uri_dev + 'actualizarDetalleReport', data, async function (data, status) {
+        alert('Se gestiono con Exito');
+        CargarReportesDetalle(f);
+        }).catch(x=>{
+        console.log(x);
+        alert('Error');
+        });
+        }else{
+        alert("Falta llenar Campos");
+        }
+      }
+
+      function DeleteReportDetalle(id){
+        f = $('#dll_reporte option:selected').val();
+        $.get(uri_dev + 'deleteDetalleReports/'+id, async function (data, status) {
+        CargarReportesDetalle(f);
+      });
+      }
+
+      function setCorreos(id){
+      $("#txt_correo_send").val("");
+      $("#txt_html_send").val("");
+      $("#txt_name_correo").val("");
+      $("#txt_id_correos").val(0);
+      $("#save_correos").show();
+      $("#update_correos").hide(); 
+      if(id != 0){
+      const valor = CORREOS.filter(function(valor) {return valor.Id == id; })[0];
+      $("#txt_correo_send").val(valor.correos);
+      $("#txt_html_send").val(valor.plantilla);
+      $("#txt_name_correo").val(valor.valor);
+      $("#txt_id_correos").val(id);
+      $("#save_correos").hide();
+      $("#update_correos").show(); 
+      }
+      }
+      
+      function SaveCorreos(){
+      a = $("#txt_correo_send").val().replace(/\n/g, "");;
+      b = $("#txt_html_send").val();
+      c = $("#txt_name_correo").val();
+      x = $("#txt_id_correos").val();
+      if(a !=="" && b !=="" ){
+        data = {
+        id: x || 0,
+        correos: a,
+        plantilla: b,
+        name_correo : c
+      }
+      $.post(uri_dev + 'actualizarCorreos', data, async function (data, status) {
+        alert('Se gestiono con Exito');
+        init();
+      }).catch(x=>{
+        console.log(x);
+        alert('Error');
+      });
+      }else{
+        alert("Falta llenar Campos");
+      }
+
+      }
+      
+      function DeleteCorreo(id){
+        $.get(uri_dev + 'deleteCorreo/'+id, async function (data, status) {
+        alert("Se elmino con exito");
+        init();
+      });
+
+      }
+
+      function setServidores(id){
+      $("#txt_nameservidor").val("");  
+      $("#txt_database").val("");
+      $("#txt_host").val("");
+      $("#txt_user").val("");
+      $("#txt_password").val("");
+      $("#txt_id_servidores").val(0);
+      $("#save_servidores").show();
+      $("#update_servidores").hide(); 
+      if(id != 0){
+      const valor = SERVIDORES.filter(function(valor) {return valor.Id == id; })[0];
+      $("#txt_nameservidor").val(valor.valor); 
+      $("#txt_database").val(valor.db);
+      $("#txt_host").val(valor.host);
+      $("#txt_user").val(valor.user);
+      $("#txt_password").val(valor.password);
+      $("#txt_id_servidores").val(id);
+      $("#save_servidores").hide();
+      $("#update_servidores").show(); 
+      }
+      }
+
+      function SaveServidor(){
+        name_servidor=$("#txt_nameservidor").val();  
+        a = $("#txt_database").val();
+        b = $("#txt_host").val();
+        c = $("#txt_user").val();
+        d = $("#txt_password").val();
+        x = $("#txt_id_servidores").val();
+        if(a !=="" && b !=="" && c !=="" && d !==""){
+
+            data = {
+            id: x || 0,
+            db: a,
+            host: b,
+            password:d,
+            user:c,
+            name_servidor:name_servidor
+        }
+
+
+        $.post(uri_dev + 'actualizarSevidores', data, async function (data, status) {
+            alert('Se gestiono con Exito');
+            init();
+        }).catch(x=>{
+            console.log(x);
+            alert('Error');
+        });
+            
+        }else{
+
+            alert("Falta llenar Campos");
+        }
+
+      }
+
+      function DeleteServidor(id){
+        $.get(uri_dev + 'deleteServer/'+id, async function (data, status) {
+        alert("Se elmino con exito");
+        init();
+         });
+      }
+
+      function SaveDocumento(){
+        var form = $('#savePlantilla')[0];
+        var data = new FormData(form);
+        console.log(data);
+        $.ajax({
+            type: "POST",
+            enctype: 'multipart/form-data',
+            url: uri_dev + 'upload',
+            data: data,
+            processData: false,
+            contentType: false,
+            cache: false,
+            timeout: 600000,
+            success: function (data) {
+                console.log("SUCCESS : ", data);
+                init();
+            },
+            error: function (e) {
+                console.log("ERROR : ", e);
+            }
+        });
+
+      }
+
+      function DescargarArchivo(archivo){
+
+        window.open(uri_dev + 'download/'+archivo, '_blank');
+       
+      }
+
+      function DeletePlantilla(id){
+        $.get(uri_dev + 'deleteplantilla/'+id, async function (data, status) {
+        alert("Se elmino con exito");
+        init();
+         });
+
+      }
+
+</script>
+
+</html>

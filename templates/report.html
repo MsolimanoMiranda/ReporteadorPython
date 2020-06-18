@@ -1,0 +1,1054 @@
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Reporteador | V1.0</title>
+  <link rel="shortcut icon" href="../../images/favicon.ico" type="image/x-icon">
+  <meta name="viewport"
+    content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+    crossorigin="anonymous"></script>
+  <!-- Boostrap 3.3.7 -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <!-- font Awesome -->
+  <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+    integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <link href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css" rel="stylesheet">
+  <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"
+    integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm"
+    crossorigin="anonymous"></script>
+    <script src = "https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"> </script>
+ 
+  <style>
+    /* body{
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+} */
+  pre{
+      margin-bottom: 16px;
+      padding: 8px;
+      border: 1px solid var(--saf-0);
+      border-radius: 4px;
+      background: rgba(var(--sk_foreground_min,29,28,29),.04);
+  }
+
+
+
+.container-spinner{
+    z-index: 200;
+    position: fixed;
+    width: 100%;
+    opacity: 0.2;
+    height: 100%;
+    background-color: wheat;
+  
+}
+.spinner{
+    width: 80px;
+    height: 80px;
+    z-index: 9999;
+    border: 2px solid #f3f3f3;
+    border-top:3px solid red;
+    border-radius: 100%;
+    position: fixed;
+    top:0;
+    bottom:0;
+    left:0;
+    right: 0;
+    margin: auto;
+    
+    animation: spin 1s infinite linear;
+}
+
+@keyframes spin {
+    from{
+        transform: rotate(0deg);
+    }to{
+        transform: rotate(360deg);
+    }
+}
+
+
+     
+    #mdialTamanio { 
+      width: 80% !important;
+    }
+
+    .cards {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .card {
+      flex: 1 0 500px;
+      box-sizing: border-box;
+      margin: 1rem .25em;
+    }
+
+    @media screen and (min-width: 40em) {
+      .card {
+        max-width: calc(50% - 1em);
+      }
+    }
+
+    @media screen and (min-width: 60em) {
+      .card {
+        max-width: calc(25% - 1em);
+      }
+    }
+  </style>
+</head>
+
+
+<body>
+  <div class="container-spinner">
+    <div class="spinner">
+
+    </div>
+
+  </div>
+  
+  <div class="container">
+    <div class="row">
+
+
+      <div class="col-md-12">
+        <div class="jumbotron mt-2">
+
+          <h1>Mantenimiento de Reportes</h1>
+          <p class="lead">Operaciones de Mantenimiento.</p>
+
+
+          <button type="button" class="btn btn-primary"  onclick="OpenReportes();">
+            Nuevo Reporte
+          </button>
+          <button type="button" class="btn btn-primary" onclick="OpenServidor();">
+            Servidores
+          </button>
+          <button type="button" class="btn btn-primary" onclick="OpenCorreos();">
+            Correos
+          </button>
+          </p>
+        </div>
+      </div>
+    </div>
+
+
+
+
+  </div>
+  
+
+  <div id="contenedor">
+
+  </div>
+
+
+  <div class="modal fade" id="modal-kpi-detalle" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" style="max-width: 900px;">
+      <div class="modal-content">
+        <!-- Cabecera-->
+        <div class="modal-header" style="background-color:#16599f ;color:white !important;">
+          <h4 class="modal-title text-center" id="lineModalLabel1">Detalle de Reportes</h4>
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true"
+              style="color: white;">×</span><span class="sr-only">Close</span></button>
+
+        </div>
+        <div class="modal-body" style="text-align: center;padding: 10px;">
+          <div class="container-fluid"  id="detalle_detalle">
+            <p>Gestionar Detalle</p>
+            <div class="row">
+              <input type="hidden"  id="txt_id_detalle" />
+              <input type="hidden"  id="txt_id_kpi" />
+              <div class="col-sm-3"><label>Hoja</label><input type="text" class="form-control" id="txt_hoja" /></div>
+              <div class="col-sm-3"><label>Columna</label><input type="text" class="form-control" id="txt_columna" />
+              </div>
+              <div class="col-sm-3"><label>Fila</label><input type="text" class="form-control" id="txt_fila" /></div>
+              <div class="col-sm-3"><label>Servidor</label><input type="text" class="form-control" id="txt_servidor" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-9"><label>Query</label> <textarea class="form-control" rows="5"
+                  id="txt_query"></textarea></div>
+              <div class="col-sm-3" style="padding-top: 70;"><button class="btn btn-success"
+                  onclick="guardarDetalleReporte()">Guardar</button></div>
+            </div>
+          </div>
+          <br> <br>
+          <div id="contenedor_detalle"></div>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="modal fade" id="modal_correo" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="max-width: 600px;">
+      <div class="modal-content">
+        <!-- Cabecera-->
+
+        <div class="modal-header" style="background-color:#16599f ;color:white !important;">
+          <h4 class="modal-title text-center" id="lineModalLabel1">Gestionar Correos</h4>
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true"
+              style="color: white;">×</span><span class="sr-only">Close</span></button>
+
+        </div>
+        <div class="modal-body" style="text-align: center;padding: 10px;">
+          <div class="container-fluid">
+            <div class="row">
+              <input type="hidden" id="id_correo" />
+              <div class="col-sm-9"><label>Correos(Recuerde separado por comas)</label> <textarea class="form-control"
+                  rows="5" id="txt_correos_get"></textarea></div>
+              <div class="col-sm-3" style="padding-top: 70;"><button class="btn btn-success"
+                  onclick="guardarCorreo()">Guardar</button></div>
+            </div>
+          </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="modal fade" id="modal-kpi-servidores" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" style="max-width: 900px;">
+      <div class="modal-content">
+        <!-- Cabecera-->
+        <div class="modal-header" style="background-color:#16599f ;color:white !important;">
+          <h4 class="modal-title text-center" id="lineModalLabel1">Detalle de Servidores</h4>
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true"
+              style="color: white;">×</span><span class="sr-only">Close</span></button>
+
+        </div>
+        <div class="modal-body" style="text-align: center;padding: 10px;">
+          <div class="container-fluid" >
+            <p>Gestionar Servidor</p>
+            <div class="row">
+              <input type="hidden" id="txt_idservidor"/>
+              <div class="col-sm-2"><label>Base Datos</label><input type="text" class="form-control" id="txt_database" /></div>
+              <div class="col-sm-3"><label>Host</label><input type="text" class="form-control" id="txt_host" />
+              </div>
+              <div class="col-sm-2"><label>User</label><input type="text" class="form-control" id="txt_user" /></div>
+              <div class="col-sm-3"><label>Password</label><input type="text" class="form-control" id="txt_password" />
+              </div>
+              <div class="col-sm-2" style="padding-top: 28;"><button class="btn btn-success"
+                onclick="guardarServidor()">Guardar</button></div>
+              </div>
+            </div>
+            
+          <br> <br>
+          <div id="contenedor_servidores"></div>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="modal-kpi-correos" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" style="max-width: 900px;">
+      <div class="modal-content">
+        <!-- Cabecera-->
+        <div class="modal-header" style="background-color:#16599f ;color:white !important;">
+          <h4 class="modal-title text-center" id="lineModalLabel1">Detalle de correos</h4>
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true"
+              style="color: white;">×</span><span class="sr-only">Close</span></button>
+
+        </div>
+        <div class="modal-body" style="text-align: center;padding: 10px;">
+          <div class="container-fluid" >
+            <p>Gestionar Correos</p>
+            <div class="row">
+              <input type="hidden" id="txt_idcorreo"/>
+              <div class="col-sm-5"><label>Correos</label><textarea cols="5" rows="8"  class="form-control" id="txt_correo" ></textarea></div>
+              <div class="col-sm-5"><label>Html</label><textarea cols="15" rows="8" class="form-control" id="txt_html" ></textarea></div>
+            <!-- <div class="col-sm-3"><pre><code id="txt_html">asasasas</code></pre></div> -->
+              <div class="col-sm-2" style="padding-top: 28;"><button class="btn btn-success"
+                onclick="guardarCorreos()">Guardar</button></div>
+              </div>
+            </div>
+            
+          <br> <br>
+          <div id="contenedor_correos"></div>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="modal-kpi-reporte" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+  <div class="modal-dialog" style="max-width: 900px;">
+    <div class="modal-content">
+      <!-- Cabecera-->
+      <div class="modal-header" style="background-color:#16599f ;color:white !important;">
+        <h4 class="modal-title text-center" id="lineModalLabel1">Mantenimiento de Reportes</h4>
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true"
+            style="color: white;">×</span><span class="sr-only">Close</span></button>
+      </div>
+      <div class="modal-body" style="text-align: center;padding: 10px;">
+        <div class="container-fluid" >
+          <p>Gestionar Reporte</p>
+          <div class="row">
+            <input type="hidden" id="txt_idreporte"/>
+            <div class="col-sm-3"><label>Id Correo</label><input type="text" class="form-control" id="txt_rep_correo" /></div>
+            <div class="col-sm-6"><label>Nombre</label><input type="text" class="form-control" id="txt_rep_nombre" /> </div>
+            <div class="col-sm-2" style="padding-top: 28;"><button class="btn btn-success"
+              onclick="guardarReportes()">Guardar</button></div>
+          </div>
+          <div class="row"> 
+            <div class="col-sm-4"><label>Razon</label><input type="text" class="form-control" id="txt_rep_razon" /></div>
+            <div class="col-sm-4"><label>Ruc</label><input type="text" class="form-control" id="txt_rep_ruc" /> </div>
+            <div class="col-sm-4"><label>Plantilla Excel</label><input type="text" class="form-control" id="txt_rep_plantilla" /> </div>
+
+          </div>
+          
+       
+
+
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="modal fade" id="modal-kpi-archivo" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+  <div class="modal-dialog" style="max-width: 900px;">
+    <div class="modal-content">
+      <!-- Cabecera-->
+      <div class="modal-header" style="background-color:#16599f ;color:white !important;">
+        <h4 class="modal-title text-center" id="lineModalLabel1">Mantenimiento de Reportes</h4>
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true"
+            style="color: white;">×</span><span class="sr-only">Close</span></button>
+      </div>
+      <div class="modal-body" style="text-align: center;padding: 10px;">
+        <div class="container-fluid" >
+          <p>Gestionar Archivo</p>
+          <div class="row">
+            <form action="/upload" method="POST" enctype="multipart/form-data">
+              <input type="file" class="form-control" name="archivo">
+              <input class="form-control" type="submit">
+             </form>
+          </div>
+         
+
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+
+
+
+
+  <!-- Scripts -->
+  <script>
+
+
+
+    var SERVIDORES=[];
+    var CORREOS=[];
+    var REPORTES=[];
+    var REPORTES_DETALLE=[];
+
+    var uri_dev = "http://192.99.145.229:5000/";
+
+
+
+    //OPEN MODALS
+
+    function OpenServidor() {
+
+        $('#modal-kpi-servidores').modal('show');
+        setServidores({});
+
+        $.get(uri_dev + 'getServidores', async function (data, status) {
+
+          await createTableServidores(data.data);
+    });
+  }
+
+    function OpenCorreos() {
+
+      $('#modal-kpi-correos').modal('show');
+      setCorreos({});
+      $.get(uri_dev + 'getCorreos', async function (data, status) {
+
+        await createTableCorreos(data.data);
+
+    });
+  }
+
+      function OpenReportes(){
+
+        $('#modal-kpi-reporte').modal('show');
+          setReportes({});
+        
+
+
+
+      }
+
+
+    function ejecutarReporte(id) {
+      // http://192.99.145.229:5000/report/2/
+      loader(true);
+      $.get(uri_dev + 'report/' + id, function (data, status) {
+
+        loader(false);
+      }).catch(x=>{
+
+        loader(false);
+      });
+    }
+
+    async function setDetalle(id) {
+
+      await $.get(uri_dev + 'detalleReports/' + id, function (data, status) {
+        console.log(data.data);
+        REPORTES_DETALLE=data.data;
+        $('#txt_id_kpi').val(id);
+        if(data.data.length>0 && data.data != null){
+          createTableDetalle(data.data);
+        }else{
+          document.getElementById("contenedor_detalle").innerHTML = '';
+        }
+        
+        setDetalleG({});
+        $('#txt_id_kpi').val(id);
+        $('#modal-kpi-detalle').modal('show');
+      });
+
+
+    }
+
+
+
+  
+
+
+
+
+
+    function createTable(data) {
+
+      // var response = localStorage.getItem('response_list');
+      // console.log(response);
+      response = data;
+
+      let txt = "";
+      let headers = [];
+      columns = Object.keys(response[0]);
+      txt += '<table   class="table table-bordered table-hover dataTable no-footer" style="margin-bottom: 12px !important; width: 1304px;" id="table">';
+      txt += '<thead>';
+      txt += '<tr style="background-color: #16599f;color:white;">';
+      columns.push('Acciones');
+      for (x in columns) {
+        txt += "<th>" + columns[x] + "</th>";
+        headers.push({ data: columns[x] });
+      }
+      txt += "</tr>"
+      txt += "</thead>"
+      document.getElementById("contenedor").innerHTML = txt;
+
+
+      var datax = data.map(function (x) {
+
+        return {
+          Id: x.Id, 'Id Correo': x['Id Correo'], 'Nombre Reporte': x['Nombre Reporte'], Razon: x.Razon, Ruc: x.Ruc, Ruta: x.Ruta,
+          Acciones: '<button title="Editar Formula"  class="btn btn-primary" onclick="setDetalle(' + x.Id + ')"><i class="fa fa-list"></i></button>&nbsp<button class="btn btn-success" onclick="DetalleReporte(' + x.Id + ')"><i class="fa fa-wrench inactiveLink"></i></button>&nbsp<button class="btn btn-warning" onclick="ejecutarReporte(' + x.Id + ')"><i class="fa fa-send-o"></i></button>&nbsp<button class="btn btn-danger" onclick="OpenArchivos(' + x.Id + ')"><i class="fa fa-file-excel-o"></i></button>'
+        };
+      });
+
+      table = $('#table').DataTable({
+        data: datax,
+        columns: headers,
+        "aProcessing": true,//Activamos el procesamiento del datatables
+        "aServerSide": true,//Paginación y filtrado realizados por el servidor
+        dom: 'Bfrtip',//Definimos los elementos del control de tabla
+        "searching": true,
+        "language": {
+          "decimal": "",
+          "emptyTable": "No hay información",
+          "info": "Mostrando _START_ a _END_ de _TOTAL_ Entradas",
+          "infoEmpty": "Mostrando 0 to 0 of 0 Entradas",
+          "infoFiltered": "(Filtrado de _MAX_ total entradas)",
+          "infoPostFix": "",
+          "thousands": ",",
+          "lengthMenu": "Mostrar _MENU_ Entradas",
+          "loadingRecords": "Cargando...",
+          "processing": "Procesando...",
+          "search": "Filtrar:",
+          "zeroRecords": "Sin resultados encontrados",
+          "paginate": {
+            "first": "Primero",
+            "last": "Ultimo",
+            "next": "Siguiente",
+            "previous": "Anterior"
+          }
+        }
+      });
+
+      $('#table_filter').hide();
+      //Búsqueda
+      $('#filtro-tablas').on('keyup', function () {
+        var r = $('#table_filter').children().children();
+        r.val($("#filtro-tablas").val());
+        r.keyup();
+      });
+
+
+
+
+
+    }
+
+
+    function iniciar() {
+      loader(true);
+      $.get(uri_dev + 'reports', async function (data, status) {
+        REPORTES=data.data;
+        await createTable(data.data);
+        loader(false);
+      }).catch(x=>{
+        console.log("x");
+        loader(false);
+      });
+    }
+
+    iniciar();
+
+
+    function createTableDetalle(data) {
+
+      var datax = data.map(function (x) {
+        
+        return {
+          Hoja: x.hoja, Columna: x.col, Fila: x.fil, 'Id Servidor': x.id_servidor, Query: x.query.substring(0, 30),
+          Acciones: '<button class="btn btn-primary" onclick="verDetalleReportes(' + x.Id + ')"><i class="fa fa-wrench"></i></button>&nbsp<button class="btn btn-danger" onclick="eliminarDetalle(' + x.Id + ')"><i class="fa fa-times"></i></button>'
+        };
+      });
+
+      response = datax;
+      let txt = "";
+      let headers = [];
+      columns = Object.keys(response[0]);
+      txt += '<table   class="table table-bordered table-hover dataTable no-footer" style="margin-bottom: 12px !important; width: 1304px;" id="table_detalle">';
+      txt += '<thead>';
+      txt += '<tr style="background-color: #16599f;color:white;">';
+      for (x in columns) {
+        txt += "<th>" + columns[x] + "</th>";
+        headers.push({ data: columns[x] });
+      }
+      txt += "</tr>"
+      txt += "</thead>"
+      document.getElementById("contenedor_detalle").innerHTML = txt;
+
+
+
+
+
+      table = $('#table_detalle').DataTable({
+        data: datax,
+        columns: headers,
+        "aProcessing": true,//Activamos el procesamiento del datatables
+        "aServerSide": true,//Paginación y filtrado realizados por el servidor
+        dom: 'Bfrtip',//Definimos los elementos del control de tabla
+        "searching": true,
+        "language": {
+          "decimal": "",
+          "emptyTable": "No hay información",
+          "info": "Mostrando _START_ a _END_ de _TOTAL_ Entradas",
+          "infoEmpty": "Mostrando 0 to 0 of 0 Entradas",
+          "infoFiltered": "(Filtrado de _MAX_ total entradas)",
+          "infoPostFix": "",
+          "thousands": ",",
+          "lengthMenu": "Mostrar _MENU_ Entradas",
+          "loadingRecords": "Cargando...",
+          "processing": "Procesando...",
+          "search": "Filtrar:",
+          "zeroRecords": "Sin resultados encontrados",
+          "paginate": {
+            "first": "Primero",
+            "last": "Ultimo",
+            "next": "Siguiente",
+            "previous": "Anterior"
+          }
+        }
+      });
+
+
+
+
+
+
+
+    }
+
+
+    function enditarCorreo(id_kpi, id_correo) {
+
+      $('#modal_correo').modal('show');
+
+      $.get(uri_dev + 'getCorreos/' + id_correo, function (data, status) {
+        response = data.data;
+
+        $("#id_correo").val(id_correo);
+        $("#txt_correos_get").val(response[0].correos);
+      });
+
+
+    }
+
+
+
+    function guardarCorreo() {
+
+      correos = $("#txt_correos_get").val();
+      id_correo = $("#id_correo").val();
+      data = {
+        correo: correos,
+        id: id_correo
+      }
+
+
+      $.post(uri_dev + 'update_correo', data, async function (data, status) {
+        alert('Se modifico con exito');
+        console.log(data);
+      });
+
+    }
+
+
+  
+
+
+    function createTableServidores(data) {
+
+      SERVIDORES=data;
+      var datax = data.map(function(x) {
+
+         return {Id:x.Id,BaseDatos:x.db,Host:x.host,Usuario:x.user,Password:x.password,
+         Acciones :'<button class="btn btn-primary" onclick="verDetalleServidor('+x.Id+')"><i class="fa fa-wrench"></i></button>&nbsp<button class="btn btn-danger" onclick="eliminarSevidor('+x.Id+')"><i class="fa fa-times"></i></button>'};
+      });
+
+      response = datax;
+      let txt = "";
+      let headers = [];
+      columns = Object.keys(response[0]);
+      txt += '<table   class="table table-bordered table-hover dataTable no-footer" style="margin-bottom: 12px !important; width: 600px;" id="table_detalle_servidor">';
+      txt += '<thead>';
+      txt += '<tr style="background-color: #16599f;color:white;">';
+      for (x in columns) {
+        txt += "<th>" + columns[x] + "</th>";
+        headers.push({ data: columns[x] });
+      }
+      txt += "</tr>"
+      txt += "</thead>"
+      document.getElementById("contenedor_servidores").innerHTML = txt;
+
+
+
+      table = $('#table_detalle_servidor').DataTable({
+        data: datax,
+        columns: headers,
+        "aProcessing": true,//Activamos el procesamiento del datatables
+        "aServerSide": true,//Paginación y filtrado realizados por el servidor
+         dom:'Bfrtip',//Definimos los elementos del control de tabla
+         "searching": true,
+         "language":{
+              "decimal": "",
+              "emptyTable": "No hay información",
+              "info": "Mostrando _START_ a _END_ de _TOTAL_ Entradas",
+              "infoEmpty": "Mostrando 0 to 0 of 0 Entradas",
+              "infoFiltered": "(Filtrado de _MAX_ total entradas)",
+              "infoPostFix": "",
+              "thousands": ",",
+              "lengthMenu": "Mostrar _MENU_ Entradas",
+              "loadingRecords": "Cargando...",
+              "processing": "Procesando...",
+              "search": "Filtrar:",
+              "zeroRecords": "Sin resultados encontrados",
+              "paginate": {
+                  "first": "Primero",
+                  "last": "Ultimo",
+                  "next": "Siguiente",
+                  "previous": "Anterior"
+              }
+          }
+      });
+
+
+
+
+    }
+
+    function verDetalleServidor(id){
+      if(SERVIDORES.length>0){
+        const result = SERVIDORES.filter(x => x.Id = id)[0];
+        setServidores(result);
+      }
+    }
+
+    function verDetalleReportes(id){
+      if(REPORTES_DETALLE.length>0){
+        const result = REPORTES_DETALLE.filter(x => x.Id = id)[0];
+        console.log(result);
+        setDetalleG(result);
+      }
+
+
+    }
+
+
+    function DetalleReporte(id){
+
+      if(REPORTES.length>0){
+        const result = REPORTES.filter(x => x.Id = id)[0];
+      setReportes(result);
+      $('#modal-kpi-reporte').modal('show');
+
+      }
+
+    }
+
+
+
+    function eliminarSevidor(id){
+      $.get(uri_dev + 'deleteServer/'+id, async function (data, status) {
+        alert("Se elmino con exito");
+        $('#modal-kpi-servidores').modal('hide');
+
+      });
+      
+    }
+    function eliminarCorreos(id){
+      $.get(uri_dev + 'deleteCorreo/'+id, async function (data, status) {
+        alert("Se elmino con exito");
+        $('#modal-kpi-correos').modal('hide');
+
+      });
+      
+    }
+
+    function setServidores(valor){
+      $("#txt_database").val("");
+      $("#txt_host").val("");
+      $("#txt_user").val("");
+      $("#txt_password").val("");
+      $("#txt_idservidor").val(0);
+      if(valor.Id){
+      $("#txt_database").val(valor.db);
+      $("#txt_host").val(valor.host);
+      $("#txt_user").val(valor.user);
+      $("#txt_password").val(valor.password);
+      $("#txt_idservidor").val(valor.Id);
+      }
+    }
+
+    function setCorreos(valor){
+      $("#txt_correo").val("");
+      $("#txt_html").val("");
+      $("#txt_idcorreo").val(0);
+      if(valor.Id){
+      $("#txt_correo").val(valor.correos);
+      $("#txt_html").val(valor.plantilla);
+      $("#txt_idcorreo").val(valor.Id);
+      }
+    }
+
+    function setReportes(valor){
+      $("#txt_rep_correo").val("");
+      $("#txt_rep_nombre").val("");
+      $("#txt_rep_razon").val("");
+      $("#txt_rep_ruc").val("");
+      $("#txt_rep_plantilla").val("");
+      $("#txt_idreporte").val(0);
+      if(valor.Id){
+      $("#txt_rep_correo").val(valor['Id Correo']);
+      $("#txt_rep_nombre").val(valor['Nombre Reporte']);
+      $("#txt_rep_razon").val(valor.Razon);
+      $("#txt_rep_ruc").val(valor.Ruc);
+      $("#txt_rep_plantilla").val(valor.Ruta);
+      $("#txt_idreporte").val(valor.Id);
+      }
+    }
+   
+
+    function setDetalleG(valor) {
+
+    $('#txt_hoja').val("");
+    $('#txt_columna').val("");
+    $('#txt_fila').val("");
+    $('#txt_servidor').val("");
+    $('#txt_query').val("");
+    $('#txt_id_detalle').val(0);
+    $('#txt_id_kpi').val(0);
+    if(valor.Id){
+      console.log(valor);
+    $('#txt_hoja').val(valor.hoja);
+    $('#txt_columna').val(valor.col);
+    $('#txt_fila').val(valor.fil);
+    $('#txt_servidor').val(valor.id_servidor);
+    $('#txt_query').val(valor.query);
+    $('#txt_id_detalle').val(valor.Id);
+    $('#txt_id_kpi').val(valor.id_kpi); 
+    }
+
+  }
+
+  
+  function guardarDetalleReporte(){
+    
+    a = $('#txt_hoja').val();
+    b = $('#txt_columna').val();
+    c = $('#txt_fila').val();
+    d = $('#txt_servidor').val();
+    e = $('#txt_query').val();
+    f = $('#txt_id_kpi').val();
+    x = $('#txt_id_detalle').val();
+
+    
+    if(a !=="" && b !=="" && c !=="" && d !=="" && e !=="" && f !=="" ){
+    
+    data = {
+      id: x || 0,
+      id_kpi:f,
+      hoja: a,
+      col: b,
+      fil:c,
+      query:e !== ''?e.replace(/'/g,'"'):'',
+      id_servidor:d
+
+    }
+    console.log(data.query);
+
+
+    $.post(uri_dev + 'actualizarDetalleReport', data, async function (data, status) {
+      alert('Se gestiono con Exito');
+      $('#modal-kpi-detalle').modal('hide');
+      iniciar();
+    }).catch(x=>{
+      console.log(x);
+      alert('Error');
+    });
+      
+    }else{
+
+      alert("Falta llenar Campos");
+    }
+
+ }
+
+   function guardarCorreos(){
+      a = $("#txt_correo").val();
+      b = $("#txt_html").val();
+      x = $("#txt_idcorreo").val();
+      if(a !=="" && b !=="" ){
+
+        data = {
+        id: x || 0,
+        correos: a,
+        plantilla: b
+      }
+
+
+      $.post(uri_dev + 'actualizarCorreos', data, async function (data, status) {
+        alert('Se gestiono con Exito');
+        $('#modal-kpi-correos').modal('hide');
+      }).catch(x=>{
+        console.log(x);
+        alert('Error');
+      });
+        
+      }else{
+
+        alert("Falta llenar Campos");
+      }
+
+   }
+
+
+   function guardarReportes(){
+    
+      a = $("#txt_rep_correo").val();
+      b = $("#txt_rep_nombre").val();
+      c = $("#txt_rep_razon").val();
+      d = $("#txt_rep_ruc").val();
+      e = $("#txt_rep_plantilla").val();
+
+      x = $("#txt_idreporte").val();
+
+      
+      if(a !=="" && b !=="" && c !=="" && d !=="" && e !=="" ){
+
+        data = {
+        id: x || 0,
+        ruc: d,
+        razon: c,
+        name_reporte:b,
+        plantilla:e,
+        id_correo:a
+
+      }
+
+
+      $.post(uri_dev + 'actualizarReportes', data, async function (data, status) {
+        alert('Se gestiono con Exito');
+        $('#modal-kpi-reporte').modal('hide');
+        iniciar();
+      }).catch(x=>{
+        console.log(x);
+        alert('Error');
+      });
+        
+      }else{
+
+        alert("Falta llenar Campos");
+      }
+
+   }
+
+   function OpenArchivos(){
+
+     $('#modal-kpi-archivo').modal('show');
+   }
+
+
+   function guardarServidor(){
+      a = $("#txt_database").val();
+      b = $("#txt_host").val();
+      c = $("#txt_user").val();
+      d = $("#txt_password").val();
+      x = $("#txt_idservidor").val();
+      if(a !=="" && b !=="" && c !=="" && d !==""){
+
+        data = {
+        id: x || 0,
+        db: a,
+        host: b,
+        password:d,
+        user:c
+      }
+
+
+      $.post(uri_dev + 'actualizarSevidores', data, async function (data, status) {
+        alert('Se gestiono con Exito');
+        $('#modal-kpi-servidores').modal('hide');
+        console.log(data);
+      }).catch(x=>{
+        console.log(x);
+        alert('Error');
+      });
+        
+      }else{
+
+        alert("Falta llenar Campos");
+      }
+
+
+   }
+
+
+function createTableCorreos(data){
+
+CORREOS=data;
+var datax = data.map(function(x) {
+
+   return {Id:x.Id,Correos:x.correos,Plantilla:'html',
+   Acciones :'<button class="btn btn-primary" onclick="verDetalleCorreo('+x.Id+')"><i class="fa fa-wrench"></i></button>&nbsp<button class="btn btn-danger" onclick="eliminarCorreos('+x.Id+')"><i class="fa fa-times"></i></button>'};
+});
+
+response = datax;
+let txt = "";
+let headers = [];
+columns = Object.keys(response[0]);
+txt += '<table   class="table table-bordered table-hover dataTable no-footer" style="margin-bottom: 12px !important; width: 600px;" id="table_detalle_correos">';
+txt += '<thead>';
+txt += '<tr style="background-color: #16599f;color:white;">';
+for (x in columns) {
+  txt += "<th>" + columns[x] + "</th>";
+  headers.push({ data: columns[x] });
+}
+txt += "</tr>"
+txt += "</thead>"
+document.getElementById("contenedor_correos").innerHTML = txt;
+
+
+
+table = $('#table_detalle_correos').DataTable({
+  data: datax,
+  columns: headers,
+  "aProcessing": true,//Activamos el procesamiento del datatables
+  "aServerSide": true,//Paginación y filtrado realizados por el servidor
+   dom:'Bfrtip',//Definimos los elementos del control de tabla
+   "searching": true,
+   "language":{
+        "decimal": "",
+        "emptyTable": "No hay información",
+        "info": "Mostrando _START_ a _END_ de _TOTAL_ Entradas",
+        "infoEmpty": "Mostrando 0 to 0 of 0 Entradas",
+        "infoFiltered": "(Filtrado de _MAX_ total entradas)",
+        "infoPostFix": "",
+        "thousands": ",",
+        "lengthMenu": "Mostrar _MENU_ Entradas",
+        "loadingRecords": "Cargando...",
+        "processing": "Procesando...",
+        "search": "Filtrar:",
+        "zeroRecords": "Sin resultados encontrados",
+        "paginate": {
+            "first": "Primero",
+            "last": "Ultimo",
+            "next": "Siguiente",
+            "previous": "Anterior"
+        }
+    }
+});
+
+
+}
+
+function verDetalleCorreo(id){
+  if(CORREOS.length>0){
+        const result = CORREOS.filter(x => x.Id = id)[0];
+        console.log(result);
+        setCorreos(result);
+      }
+}
+
+
+   function loader(valor){
+
+    if(valor == false){
+
+      $(".container-spinner").css("display","none");
+    }else{
+
+      $(".container-spinner").css("display","block");
+    }
+
+   }
+
+  </script>
+
+
+</body>
+
+</html>
